@@ -1,50 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-type Animal interface {
-	Says() string
-	NumberOfLegs() int
-}
-type Dog struct {
-	Name  string
-	Breed string
-}
+	"github.com/aksha/my_project/helpers"
+)
 
-type Gorilla struct {
-	Name          string
-	Color         string
-	NumberOfTeeth int
+const numPool = 1000
+
+func CalculateValue(intChan chan int) {
+	randomNumber := helpers.RandomNumber(numPool)
+	intChan <- randomNumber
 }
 
 func main() {
-	dog := Dog{
-		Name:  "hello",
-		Breed: "Dhruv Rathee",
-	}
-	PrintInfo(&dog)
-	gorilla := Gorilla{
-		Name:          "cha",
-		Color:         "grey",
-		NumberOfTeeth: 38,
-	}
-	PrintInfo(&gorilla)
-}
+	intChan := make(chan int)
+	defer close(intChan)
 
-func PrintInfo(a Animal) {
-	fmt.Println("this animal says", a.Says(), "and has", a.NumberOfLegs(), "legs")
-}
-func (d *Dog) Says() string {
-	return "woof"
-}
+	// Example usage of CalculateValue
+	go CalculateValue(intChan)
 
-func (d *Dog) NumberOfLegs() int {
-	return 4
-}
-func (d *Gorilla) Says() string {
-	return "ugh"
-}
-
-func (d *Gorilla) NumberOfLegs() int {
-	return 2
+	// Receive the calculated value from the channel
+	value := <-intChan
+	fmt.Println("Random number generated:", value)
 }
