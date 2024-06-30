@@ -1,23 +1,24 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 )
+func Home(w http.ResponseWriter , r *http.Request){
 
-func main() {
-	result, err := divide(100.0, 20.0)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("result of division is", result)
+
+
 }
+func main() {
+	//we jsut took the rpeosne writer and request writer and request writer takes in the pointer
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// it will print but the writer also privde swith the err and bytes
+		n, err := fmt.Fprintf(w, "hello world!")
 
-func divide(s, y float32) (float32, error) {
-	if y == 0 {
-		return 0, errors.New("cannot divide by zero")
-	}
-	result := s / y
-	return result, nil
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(fmt.Sprintf("number of bytes : %d", n))
+	})
+	_ = http.ListenAndServe(":8081", nil)
 }
