@@ -8,6 +8,7 @@ import (
 	"github.com/aksha/my_project/pkg/config"
 	"github.com/aksha/my_project/pkg/handlers"
 	"github.com/aksha/my_project/pkg/render"
+	// Import the routes package
 )
 
 const portNumber = ":8081"
@@ -26,9 +27,16 @@ func main() {
 	repo := handlers.NewRepo(&app)
 	handlers.Newhandlers(repo)
 	render.NewTemplates(&app)
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
+	// http.HandleFunc("/", handlers.Repo.Home)
+	// http.HandleFunc("/about", handlers.Repo.About)
 
 	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
-	_ = http.ListenAndServe(portNumber, nil)
+	// _ = http.ListenAndServe(portNumber, nil)
+
+	srv := &http.Server{
+		Addr:    portNumber,
+		Handler: Routes(&app),
+	}
+	err = srv.ListenAndServe()
+	log.Fatal(err)
 }

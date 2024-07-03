@@ -21,6 +21,7 @@ func NewTemplates(a *config.AppConfig){
 	app=a
 }
 func AddDefaultData(td *models.Templatedata) *models.Templatedata{
+	//add whatevr you wnat to add and then it will be parsed on the page 
 	return td 
 }
 // RenderTemplate renders a template
