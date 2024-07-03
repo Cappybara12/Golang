@@ -1,48 +1,52 @@
 package render
 
 import (
+	"bookings-udemy/pkg/config"
+	"bookings-udemy/pkg/models"
 	"bytes"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
-
-	"github.com/aksha/my_project/pkg/config"
-	"github.com/aksha/my_project/pkg/models"
 )
 
-var functions = template.FuncMap{
+var functions = template.FuncMap{}
 
-}
 var app *config.AppConfig
-//new templates set the confif frro temaptle apcakge 
-func NewTemplates(a *config.AppConfig){
-	app=a
+
+// NewTemplates sets the config for the template package
+func NewTemplates(a *config.AppConfig) {
+	app = a
 }
-func AddDefaultData(td *models.Templatedata) *models.Templatedata{
-	//add whatevr you wnat to add and then it will be parsed on the page 
-	return td 
+
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+
+	return td
 }
+
 // RenderTemplate renders a template
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.Templatedata) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
-	if app.UseCache{
-		tc =app.TemplateCache
-	}else{
-		tc,_=CreateTemplateCache()
+
+	if app.UseCache {
+		// get the template cache from the app config
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
 	}
-	// get the template cache from the app config
 
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal("cpuld not get tamptle from cache")
+		log.Fatal("Could not get template from template cache")
 	}
 
 	buf := new(bytes.Buffer)
 
+	td = AddDefaultData(td)
+
 	_ = t.Execute(buf, td)
-	td=AddDefaultData(td)
+
 	_, err := buf.WriteTo(w)
 	if err != nil {
 		fmt.Println("error writing template to browser", err)
